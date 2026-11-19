@@ -63,10 +63,10 @@ Depois que a tabela é organizada, é gerado um arquivo JSON com os dados. A bus
 
 **Objetivo:** verificar que usuários que caem na mesma linha continuam sendo pesquisados de forma independente.
 
-![Teste 3 — Busca de usuário na mesma linha](imgs/teste3.png)
+![Teste 3 — Busca dos usuários na mesma linha](imgs/teste3.png)
 
-*Figura 3 — Busca de um usuário que compartilha a linha com outro.*
+*Figura 3 — Busca dos usuário que compartilham a mesma linha.*
 
-![Teste 4 — Busca do outro usuário na mesma linha](imgs/teste4.png)
+![Teste 4 — Mostra usuários na mesma linha pelo json](imgs/teste4.png)
 
-*Figura 4 — Busca do outro usuário que compartilha a mesma linha.*
+*Figura 4 — mostra os usuários que compartilha a mesma linha no json.*
