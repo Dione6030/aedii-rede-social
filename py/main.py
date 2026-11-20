@@ -39,8 +39,8 @@ def main():
             print("=" * 40)
             print(f" Nome Completo  : {ficha[0]}")
             print(f" Data Cadastro  : {ficha[1]}")
-            print(f" Seguidores     : {ficha[2]}")
-            print(f" Seguindo       : {ficha[3]}")
+            print(f" Seguidores     : {len(ficha[2])}")
+            print(f" Seguindo       : {len(ficha[3])}")
             print(f" Total de Posts : {ficha[4]}")
             print("=" * 40 + "\n")
         else:
