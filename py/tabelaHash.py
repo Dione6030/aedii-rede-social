@@ -72,6 +72,10 @@ class TabelaDispersaSocial:
                 return "null" # Em json o valor vazio é null, enquanto que no py é none
             if isinstance(valor, (int, float)):
                 return str(valor) # Números ficam sem aspas no JSON (ex: 540)
+            if isinstance(valor, list):
+                # Para deixar os seguidores em um formato de lista dentro das fichas
+                elementos = ", ".join(social_converte_valor(x) for x in valor) 
+                return f"[{elementos}]"
             
             # Se for texto (string), protege aspas internas e envolve com aspas duplas
             texto_seguro = str(valor).replace('"', '\\"')
