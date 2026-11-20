@@ -71,8 +71,8 @@ def social_inicializar_tabela_hash(arquivo_json="backupTabela.json"):
         
         id_para_username = [None] * (maior_id + 1)
         
-        quant_seguidores = [0] * (maior_id + 1)
-        quant_seguidos = [0] * (maior_id + 1)
+        lista_seguidores = [[] for _ in range(maior_id + 1)]
+        lista_seguidos = [[] for _ in range(maior_id + 1)]
         quant_posts = [0] * (maior_id + 1)
         
         for linha in usuarios:
@@ -90,9 +90,9 @@ def social_inicializar_tabela_hash(arquivo_json="backupTabela.json"):
             id_seguido = int(linha[1])   # Quem ganhou um seguidor
             
             if id_seguidor <= maior_id:
-                quant_seguidos[id_seguidor] += 1
+                lista_seguidos[id_seguidor].append(id_seguido)
             if id_seguido <= maior_id:
-                quant_seguidores[id_seguido] += 1
+                lista_seguidores[id_seguido].append(id_seguidor)
 
         
         for linha in posts:
@@ -103,8 +103,8 @@ def social_inicializar_tabela_hash(arquivo_json="backupTabela.json"):
         for usuarioId in range(1, maior_id + 1):
             usuario_conta = id_para_username[usuarioId]
             if usuario_conta is not None:
-                tabela.social_inserir_dados(usuario_conta, 2, quant_seguidores[usuarioId])
-                tabela.social_inserir_dados(usuario_conta, 3, quant_seguidos[usuarioId])
+                tabela.social_inserir_dados(usuario_conta, 2, lista_seguidores[usuarioId])
+                tabela.social_inserir_dados(usuario_conta, 3, lista_seguidos[usuarioId])
                 tabela.social_inserir_dados(usuario_conta, 4, quant_posts[usuarioId])
         
         print("Salvando tabela processada em JSON...")
