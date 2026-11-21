@@ -32,6 +32,7 @@ Depois que a tabela é organizada, é gerado um arquivo JSON com os dados. A bus
 - **Função hash DJB2 (Daniel J. Bernstein):** é uma das mais populares e simples. Basicamente multiplica o número de cada letra por 33 e combina os valores para selecionar a linha.
 - **Encadeamento separado para colisões:** usuários podem ficar na mesma linha, mas ficam em listas diferentes dentro da mesma posição da tabela.
 - **Tamanho 26003:** é o número primo mais próximo de 130% da quantidade de dados que temos, o que nos dá uma folga. Números compostos costumam deixar mais linhas vazias enquanto outras ficam superlotadas, já tamanhos primos tendem a distribuir melhor os dados entre as linhas.
+- **JSON:** Só usei para carregar o arquivo, pesquisei como fazia para criar uma função para salvar as informações em um JSON até perceber que JSON não estáva proibido de usar, foi a melhor forma que eu encontrei para deixar a tabela organizada e funcional, a outra forma era usar os CSVs, que ia aumentar o tempo de carregamento.
 
 ### 4. Complexidade
 
