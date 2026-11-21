@@ -76,3 +76,63 @@ Depois que a tabela é organizada, é gerado um arquivo JSON com os dados. A bus
 ![Teste 4 — Mostra usuários na mesma linha pelo json](imgs/teste4.png)
 
 *Figura 4 — mostra os usuários que compartilha a mesma linha no json.*
+
+## Parte da pesquisa: Heap + Árvore
+
+### 1. O que foi feito
+
+Criamos uma classe chamada `MaxHeap` que retorna apenas o **ID do usuário recomendado** e a **quantidade de amigos em comum**. Depois da busca por um usuário, o fluxo é:
+
+1. Pega cada usuário seguido por ele;
+2. Olha os seguidos de cada um desses seguidos (seguidos dos seguidos), pela função `recomendacoes`;
+3. Coloca os candidatos em uma lista de frequência (`contar_amigos_comuns`): cada candidato é comparado com os outros seguidos do usuário para ver quantas vezes aparece, e o número de ocorrências vira a sua pontuação de amigos em comum;
+4. Insere todos os candidatos em uma árvore (`inserir`), onde a raiz é sempre o candidato com **mais amigos em comum**; ele é comparado com os demais candidatos, nos galhos e nas folhas, e as trocas necessárias são feitas (`subir` e `descer`);
+5. Retira o candidato com mais amigos em comum da árvore (`remover_maior`) e o coloca em um vetor, que será apresentado na pesquisa. A árvore substitui o que acabou de sair por uma folha, que refaz as comparações, e o processo se repete até não sobrar mais ninguém;
+6. Quando os cálculos terminam, o `main` envia tudo junto do resto da pesquisa do usuário, com os **nomes de usuário** e a **quantidade de seguidores "amigos" em comum**.
+
+### 2. Como foi feito
+
+#### Arquivos envolvidos
+
+| Arquivo | Papel |
+|---|---|
+| `heap.py` | Contém a classe responsável pelas recomendações (`MaxHeap`). |
+| `aedlib` | Chama o `heap.py` e recebe os pedidos do `main`. |
+| `main` | Envia o resultado das recomendações junto da pesquisa do usuário. |
+| `backupTabela.json` | Usado para trocar os IDs pelos nomes de usuário. |
+
+#### Funções, na ordem em que acontecem
+
+1. **`contar_amigos_comuns`:** antes de os dados serem enviados para a classe, eles passam por um contador que conta quantas vezes cada usuário se repete nos seguidos dos seguidos do usuário. Isso simula uma **BFS (Busca em Largura)**: primeiro olha os seguidos do usuário e depois os seguidos de cada um deles. O próprio usuário e quem ele já segue são ignorados.
+2. **`inserir`:** os candidatos são colocados em um vetor de listas, onde cada lista tem o **ID do candidato** e **quantas vezes ele apareceu** nos seguidos dos seguidos.
+3. **`subir`:** depois da inserção, o candidato com mais amigos em comum vai sendo colocado mais próximo da raiz da árvore (se não nela).
+4. **`remover_maior`:** retira da árvore o candidato mais recomendado e o retorna para ser colocado em outra lista.
+5. **`descer`:** a folha que ocupou o lugar do candidato retirado desce, sendo comparada com os demais, até a árvore voltar a ter quem tem mais amigos em comum no topo e quem tem menos mais abaixo. O processo repete até a lista terminar.
+
+#### No `aedlib`
+
+- **`recomendacoes`:** cria uma fila onde cada usuário é guardado em ordem, do mais recomendado para o menos recomendado.
+- **Mapeamento de IDs:** até aqui os usuários recomendados eram tratados pelos IDs. Nesta etapa, os respectivos nomes de usuário são buscados no `backupTabela.json`, para melhor identificação no terminal ou na API. Exemplo: `1154` → `@yasmin_moreira2`.
+
+### 3. Escolhas tomadas e por quê
+
+- **BFS para os seguidos dos seguidos:** precisávamos apenas da 2ª camada inteira dos seguidos pelo usuário. Cada vez que o ID de um candidato se repete, ele ganha +1 ponto de frequência, que serve para marcar o mais recomendável com base em quem o usuário raiz já segue.
+- **Max-heap:** queríamos saber quais eram os melhores candidatos, e o max-heap vai direto ao ponto: quem é mais frequente nas listas de seguidos dos seguidos fica no topo da árvore, sai, e a árvore é reorganizada para entregar os próximos melhores.
+- **Resultado em fila:** o candidato que sai da árvore entra no vetor de recomendados, e os 5 primeiros são apresentados em ordem no terminal ou na API.
+
+### 4. Complexidade
+
+| Etapa | Complexidade | Justificativa |
+|---|---|---|
+| Busca (BFS) | O(n²) | Olha os seguidos do usuário e, depois, os seguidos de cada seguido dele, pela BFS. |
+| Organização (max-heap) | O(n log n) | A árvore se organiza pela frequência de cada candidato nos seguidos dos outros e se reorganiza a cada saída. |
+
+### 5. Testes
+
+#### Teste 5 — Sugestões junto do usuário pesquisado
+
+**Objetivo:** garantir que as sugestões apareçam junto do resultado da pesquisa do usuário.
+
+![Teste 5 — Sugestões junto do usuário](imgs/teste5.png)
+
+*Figura 5 — Resultado da pesquisa com as recomendações.*
