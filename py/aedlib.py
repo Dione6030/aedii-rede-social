@@ -28,6 +28,7 @@ Todo código escrito ou gerado para este projeto DEVE seguir:
 """
 import os
 from tabelaHash import TabelaDispersaSocial
+from heap import MaxHeap, social_contar_amigos_comuns
 
 VERSAO = "2.6"
 _RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -84,6 +85,7 @@ def social_inicializar_tabela_hash(arquivo_json="backupTabela.json"):
             id_para_username[usuario_id] = usuario_conta
             tabela.social_inserir_dados(usuario_conta, 0, usuario_nome)
             tabela.social_inserir_dados(usuario_conta, 1, usuario_cadastro)
+            tabela.social_inserir_dados(usuario_conta, 5, usuario_id)
         
         for linha in seguidores:
             id_seguidor = int(linha[0])  # Quem está seguindo
@@ -111,3 +113,63 @@ def social_inicializar_tabela_hash(arquivo_json="backupTabela.json"):
         tabela.social_salvar_json(arquivo_json)
         
         return tabela
+
+def social_mapeia_ids(tabela):
+    # [SOCIAl-26] Percorre a tabela hash para transformar IDs em nomes de Usuário para consultas
+    maior_id = 0
+    
+    # Percorre toda tabela atrás do maior ID
+    for ficha in tabela.tabela:
+        for registro in ficha:
+            ficha = registro[1]
+            usuario_id = ficha[5] # posição 1 = ID 369
+            
+            if usuario_id is not None and usuario_id > maior_id:
+                maior_id = usuario_id
+    
+    # Transforma IDs em nomes de Usuário
+    id_para_nome = [None] * (maior_id + 1)
+    for ficha in tabela.tabela:
+        for registro in ficha:
+            nome_usuario = registro[0]
+            ficha = registro[1]
+            usuario_id = ficha[5]
+            
+            if usuario_id is not None:
+                id_para_nome[usuario_id] = nome_usuario
+    
+    return id_para_nome, maior_id
+
+def social_recomendacoes(ficha_usuario, tabela, id_para_nome, maior_id, limite=5):
+    # [SOCIAL-26] Pega a ficha do usuário, lê os seus seguindo e faz um top5 mais recomendados para seguir, retornando uma lista com listas: [['@usuario', quant_amigos_comuns], ...]
+    
+    id_usuario = ficha_usuario[5]
+    if id_usuario is None:
+        return []
+    
+    # Cria um vetor com amigos em comum
+    frequencia = social_contar_amigos_comuns(id_usuario, maior_id, id_para_nome, tabela)
+    
+    # Garante que quem for entrar na lista tenha pelo menos 1 amigo em comum
+    heap = MaxHeap()
+    for id_recomendado in range(1, maior_id + 1):
+        pontos = frequencia[id_recomendado]
+        if pontos > 0:
+            heap.social_inserir(pontos, id_recomendado)
+    
+    # Guarda só os que tem mais amigos em comum
+    recomendados = []
+    while len(recomendados) < limite:
+        melhor = heap.social_remover_maior()
+        
+        if melhor is None:
+            break # Acabou os candidatos
+        
+        quant_comum = melhor[0]
+        id_recomendado = melhor[1]
+        usuario_recomendado = id_para_nome[id_recomendado]
+        
+        if usuario_recomendado is not None:
+            recomendados.append([usuario_recomendado, quant_comum])
+    
+    return recomendados
