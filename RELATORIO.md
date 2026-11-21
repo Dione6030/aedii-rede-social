@@ -23,9 +23,14 @@ Depois que a tabela é organizada, é gerado um arquivo JSON com os dados. A bus
 
 ### 2. Como foi feito
 
-- A classe responsável pela tabela está em um arquivo separado, `tabelaHash.py`, e é chamada pelo `aedlib` para organizar os dados.
-- Todos os dados organizados são salvos em um arquivo JSON chamado `backupTabela.json`, criado na primeira vez em que o `main.py` é executado.
-- Nas execuções seguintes, os dados são lidos direto do JSON, sem precisar criar a tabela hash do zero a cada consulta.
+- **Estrutura:** as funções principais para criar a tabela hash ficam em um arquivo separado, `tabelaHash.py`, chamado pelo `aedlib` para organizar os dados. A classe é iniciada com um tamanho específico, guarda a quantidade de itens da tabela e monta o vetor de listas com as informações dos usuários.
+- **Função hash (`função_hash`):** optamos pelo algoritmo DJB2. O cálculo começa com um valor inicial (2381) e, para cada letra do nome de usuário, multiplica o valor acumulado por 33 e soma o código da letra. Para que a multiplicação seja mais rápida, os bits são deslocados em 5 casas (o que equivale a multiplicar por 32) e o valor anterior é somado, completando o ×33. O resultado, ajustado ao tamanho da tabela (resto da divisão), é o número da linha onde as informações do usuário serão guardadas.
+- **Inserção:** a função de inserir percorre cada informação espalhada pelos CSVs, relacionando-as pelos IDs que aparecem. Cada usuário é guardado como um par chave-valor: a chave é o nome de usuário e o valor é a lista com suas informações. Formato e exemplo:
+  - `[@nome_de_usuario, [Nome, data_de_cadastro, seguidores, seguidos, posts, ID]]`
+  - `[@pedrinho1, ["Pedrinho", "20/10/2020", 5, 10, 354, 4821]]`
+- **Salvamento:** o tamanho, a quantidade de itens e a tabela (percorrida por um laço de repetição que lê cada linha) são guardados no `backupTabela.json` pela função `salvar_json`. O arquivo é criado na primeira vez em que o `main.py` é executado.
+- **Reaproveitamento:** nas execuções seguintes, os dados são lidos direto do JSON, sem precisar criar a tabela hash do zero a cada consulta.
+- **Busca:** a função de busca procura pelo nome de usuário e, se o "@" (arroba) for esquecido, ela o completa. Em seguida, usa o código hash para ir direto à linha do JSON onde ficam as informações do usuário. Como pode haver mais de um usuário na mesma linha, ela confere qual deles é o usuário buscado pelo nome de usuário.
 
 ### 3. Escolhas tomadas e por quê
 
