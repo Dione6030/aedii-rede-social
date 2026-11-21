@@ -27,7 +27,7 @@ class TabelaDispersaSocial:
         # [SOCIAL-26] Insere os usuários com fichas fixas só esperando para serem preenchidas com suas respectivas informações, para evitar ficar dando .append sem ordem nenhuma
         
         # Mapeamento mental dos campos da ficha:
-        # 0: nome | 1: data_cadastro | 2: seguidores | 3: seguidos | 4: posts
+        # 0: nome | 1: data_cadastro | 2: seguidores | 3: seguidos | 4: posts | 5: ID do usuário
         
         indice = self.social_funcao_hash(chave)
         gaveta = self.tabela[indice]
@@ -41,7 +41,7 @@ class TabelaDispersaSocial:
                 return
             
         # Se não tem nada desse usuário ainda
-        nova_ficha = [None, None, None, None, None]
+        nova_ficha = [None, None, None, None, None, None]
         nova_ficha[indice_campo] = valor_campo # Preenche o respectivo campo
         
         gaveta.append([chave, nova_ficha]) # Abre uma gaveta com a ficha do respectivo usuário
