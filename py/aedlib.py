@@ -29,6 +29,7 @@ Todo código escrito ou gerado para este projeto DEVE seguir:
 import os
 from tabelaHash import TabelaDispersaSocial
 from heap import MaxHeap, social_contar_amigos_comuns
+from comunidades import social_encontrar_comunidades, social_ordenar_comunidades
 
 VERSAO = "2.6"
 _RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -173,3 +174,18 @@ def social_recomendacoes(ficha_usuario, tabela, ids_para_nomes, maior_id, limite
             recomendados.append([usuario_recomendado, quant_comum])
     
     return recomendados
+
+def social_obter_comunidades(ids_para_nomes, tabela):
+    # [SOCIAL-26] Recebe os usuários e retorna as comunidades que eles fizeram com "seguidos" e "seguidores"
+    comunidades = social_encontrar_comunidades(ids_para_nomes, tabela)
+    ordem_maior_menor = social_ordenar_comunidades(comunidades)
+    
+    todas_comunidades = []
+    for comunidade in ordem_maior_menor:
+        id_usuario = comunidade[0]
+        tamanho = comunidade[1]
+        nome = ids_para_nomes[id_usuario]
+        
+        todas_comunidades.append([nome, tamanho])
+    
+    return todas_comunidades
