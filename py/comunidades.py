@@ -35,12 +35,12 @@ def social_explora_comunidade(id_inicial, visitados, ids_para_nomes, tabela):
         
         # Insere todos os seguidos e seguidores na comunidade
         for vizinho_id in seguidores:
-            if 0 <= vizinho_id < len(visitados) and not visitados[vizinho_id]:
+            if 0 <= vizinho_id < len(visitados) and not visitados[vizinho_id] and not None:
                 visitados[vizinho_id] = True # Marca como visitado para não repitir se passar por ele na tabela
                 fila.append(vizinho_id)
         
         for vizinho_id in seguidos:
-            if 0 <= vizinho_id < len(visitados) and not visitados[vizinho_id]:
+            if 0 <= vizinho_id < len(visitados) and not visitados[vizinho_id] and not None:
                 visitados[vizinho_id] = True
                 fila.append(vizinho_id)
         
@@ -55,7 +55,7 @@ def social_encontrar_comunidades(ids_para_nomes, tabela):
     
     for usuario in range(total_usuarios):
         # Ignora os espaços vazios da tabela
-        if ids_para_nomes is None:
+        if ids_para_nomes[usuario] is None:
             continue
         
         if not visitados[usuario]:
@@ -69,8 +69,8 @@ def social_ordenar_comunidades(comunidades):
     heap = MaxHeap()
     
     for comunidade in comunidades:
-        tamanho = comunidade
-        menor_id = comunidade
+        tamanho = comunidade[0]
+        menor_id = comunidade[1]
         heap.social_inserir(tamanho, menor_id)
         
     comunidades_ordenadas = []
