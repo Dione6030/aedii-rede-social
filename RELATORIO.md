@@ -112,7 +112,7 @@ Criamos uma classe chamada `MaxHeap` que retorna apenas o **ID do usuário recom
 #### No `aedlib`
 
 - **`recomendacoes`:** cria uma fila onde cada usuário é guardado em ordem, do mais recomendado para o menos recomendado.
-- **Mapeamento de IDs:** até aqui os usuários recomendados eram tratados pelos IDs. Nesta etapa, os respectivos nomes de usuário são buscados no `backupTabela.json`, para melhor identificação no terminal ou na API. Exemplo: `1154` → `@yasmin_moreira2`.
+- **Mapeamento de IDs:** até aqui os usuários recomendados eram tratados pelos IDs. Nesta etapa, os respectivos nomes de usuário são buscados no `backupTabela.json` e colocados em uma lista chamada "ids_para_nomes", para melhor identificação no terminal ou na API. Exemplo: `1154` → `@yasmin_moreira2`.
 
 ### 3. Escolhas tomadas e por quê
 

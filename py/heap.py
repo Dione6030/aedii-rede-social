@@ -76,9 +76,9 @@ class MaxHeap:
         
         return topo
 
-def social_contar_amigos_comuns(usuario_id, maior_id, id_para_username, tabela):
+def social_contar_amigos_comuns(usuario_id, maior_id, ids_para_nomes, tabela):
     # [SOCIAL-26] serve para contar quantos amigos tal usuario tem em comum
-    nome_do_usuario = id_para_username[usuario_id]
+    nome_do_usuario = ids_para_nomes[usuario_id]
     ficha_do_usuario = tabela.social_buscar(nome_do_usuario)
     seguidos = ficha_do_usuario[3]
     
@@ -87,7 +87,7 @@ def social_contar_amigos_comuns(usuario_id, maior_id, id_para_username, tabela):
     
     # vamos ver quem o usuário está seguindo
     for id_amigo in seguidos:
-        nome_do_amigo = id_para_username[id_amigo]
+        nome_do_amigo = ids_para_nomes[id_amigo]
         if nome_do_amigo is None:
             continue
         

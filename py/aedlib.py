@@ -127,8 +127,8 @@ def social_mapeia_ids(tabela):
             if usuario_id is not None and usuario_id > maior_id:
                 maior_id = usuario_id
     
-    # Transforma IDs em nomes de Usuário
-    id_para_nome = [None] * (maior_id + 1)
+    # Transforma IDs em nomes de Usuário e coloca em uma lista
+    ids_para_nomes = [None] * (maior_id + 1)
     for ficha in tabela.tabela:
         for registro in ficha:
             nome_usuario = registro[0]
@@ -136,11 +136,11 @@ def social_mapeia_ids(tabela):
             usuario_id = ficha[5]
             
             if usuario_id is not None:
-                id_para_nome[usuario_id] = nome_usuario
+                ids_para_nomes[usuario_id] = nome_usuario
     
-    return id_para_nome, maior_id
+    return ids_para_nomes, maior_id
 
-def social_recomendacoes(ficha_usuario, tabela, id_para_nome, maior_id, limite=5):
+def social_recomendacoes(ficha_usuario, tabela, ids_para_nomes, maior_id, limite=5):
     # [SOCIAL-26] Pega a ficha do usuário, lê os seus seguindo e faz um top5 mais recomendados para seguir, retornando uma lista com listas: [['@usuario', quant_amigos_comuns], ...]
     
     id_usuario = ficha_usuario[5]
@@ -148,7 +148,7 @@ def social_recomendacoes(ficha_usuario, tabela, id_para_nome, maior_id, limite=5
         return []
     
     # Cria um vetor com amigos em comum
-    frequencia = social_contar_amigos_comuns(id_usuario, maior_id, id_para_nome, tabela)
+    frequencia = social_contar_amigos_comuns(id_usuario, maior_id, ids_para_nomes, tabela)
     
     # Garante que quem for entrar na lista tenha pelo menos 1 amigo em comum
     heap = MaxHeap()
@@ -167,7 +167,7 @@ def social_recomendacoes(ficha_usuario, tabela, id_para_nome, maior_id, limite=5
         
         quant_comum = melhor[0]
         id_recomendado = melhor[1]
-        usuario_recomendado = id_para_nome[id_recomendado]
+        usuario_recomendado = ids_para_nomes[id_recomendado]
         
         if usuario_recomendado is not None:
             recomendados.append([usuario_recomendado, quant_comum])
