@@ -182,8 +182,8 @@ def social_obter_comunidades(ids_para_nomes, tabela):
     
     todas_comunidades = []
     for comunidade in ordem_maior_menor:
-        id_usuario = comunidade[0]
-        tamanho = comunidade[1]
+        id_usuario = comunidade[1]
+        tamanho = comunidade[0]
         nome = ids_para_nomes[id_usuario]
         
         todas_comunidades.append([nome, tamanho])
