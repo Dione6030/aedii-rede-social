@@ -4,7 +4,7 @@
 
 ---
 
-## Parte da tabela hash
+## Parte da busca: tabela hash
 
 ### 1. O que foi feito
 
@@ -77,7 +77,7 @@ Depois que a tabela é organizada, é gerado um arquivo JSON com os dados. A bus
 
 *Figura 4 — mostra os usuários que compartilha a mesma linha no json.*
 
-## Parte da pesquisa: Heap + Árvore
+## Parte da sugestão: Heap + Árvore
 
 ### 1. O que foi feito
 
@@ -136,3 +136,63 @@ Criamos uma classe chamada `MaxHeap` que retorna apenas o **ID do usuário recom
 ![Teste 5 — Sugestões junto do usuário](imgs/teste5.png)
 
 *Figura 5 — Resultado da pesquisa com as recomendações.*
+
+## Parte das comunidades: BFS + Heap + Grafo
+
+### 1. O que foi feito
+
+Não foi necessário criar uma classe para montar as comunidades. As funções principais ficam em um arquivo chamado `comunidades.py`, e o fluxo é o seguinte:
+
+1. Pega um usuário;
+2. Verifica se ele já foi visitado. Se não, o coloca na lista de **visitados** (para não repetir a função sempre que ele aparecer entre os seguidos ou seguidores de alguém) e em uma nova lista, que será a sua **comunidade**;
+3. Olha cada usuário que ele segue ou que o segue, adicionando-os aos visitados e à lista da comunidade, e repete o processo com os seguidos e seguidores deles, sem repetir ninguém;
+4. A lista de cada comunidade contém o **nome do usuário com menor ID** e a **quantidade de usuários**. Exemplo: `["@lucas", 53]` é a comunidade identificada por `@lucas`, com 53 usuários (ele, seus seguidos e seguidores, e os seguidos e seguidores deles);
+5. Volta para a lista de usuários para "montar" as próximas comunidades, colocando todas em uma lista;
+6. Como o formato das listas das comunidades é muito parecido com o que usamos para organizar os usuários recomendados, usamos o nosso `MaxHeap` já pronto para organizar a lista de comunidades;
+7. A apresentação pelo `main.py` contém o **número total de comunidades**, os **usuários isolados** e as **comunidades**.
+
+### 2. Como foi feito
+
+#### Arquivos envolvidos
+
+| Arquivo | Papel |
+|---|---|
+| `comunidades.py` | Algoritmos que juntam os usuários em comunidades e as organizam. |
+| `heap.py` | `MaxHeap` reaproveitado para ordenar as comunidades. |
+| `aedlib` | Manda a tabela dos usuários para o `comunidades.py` e reúne todas as comunidades em uma lista. |
+| `main.py` | Apresentação: calcula o total de comunidades e de usuários isolados. |
+
+#### Funções, na ordem em que acontecem
+
+1. **`encontrar_comunidades`:** lê o ID de um usuário, coloca em uma lista de visitados e o envia para o `explorar_comunidades`.
+2. **`explorar_comunidades`:** coloca o usuário em uma lista e vai adicionando os seguidos e seguidores dele, repetindo o processo com os seguidos e seguidores deles sem repetir usuário. Todos ficam na mesma lista, com a chave do usuário de menor ID.
+3. **`ordena_comunidades`:** manda as comunidades para o `MaxHeap` ordenar, da comunidade com mais usuários para a com menos.
+
+#### No `aedlib`
+
+- **`obter_comunidades`:** manda a tabela dos usuários para as funções do `comunidades.py` e reúne o resultado em uma lista com todas as comunidades.
+
+### 3. Escolhas tomadas e por quê
+
+- **Conexão bidirecional (componente fracamente conexo):** só precisávamos de ligações simples que passassem de um usuário para outro, seja por quem ele segue ou por quem o segue.
+- **MaxHeap:** já tínhamos um algoritmo que ordena do que tem mais usuários para o que tem menos, então apenas o reaproveitamos.
+- **Cálculos na apresentação:** não vimos motivo para criar uma função própria para os cálculos simples de usuários isolados e total de comunidades, então os deixamos no `main.py`.
+- **BFS:** só precisávamos colocar os seguidos e seguidores nas listas para saber quantos usuários há em cada comunidade.
+
+### 4. Complexidade
+
+| Etapa | Complexidade | Justificativa |
+|---|---|---|
+| Busca (BFS) | O(n) | Depende só da quantidade de usuários, e nenhum é repetido por causa da lista de visitados. |
+| Organização (MaxHeap) | O(n log n) | Cada comunidade é enviada para a árvore do `MaxHeap`, que se reorganiza toda vez que alguém sai dela. É a etapa que mais demora. |
+| Apresentação e tradução de ID para nome | O(n) | Depende apenas de quantas comunidades existem, contando os isolados. |
+
+### 5. Testes
+
+#### Teste 6 — Todas as comunidades no terminal
+
+**Objetivo:** garantir que as comunidades estão aparecendo e que os cálculos estão sendo feitos.
+
+![Teste 6 — Todas as comunidades no terminal](imgs/teste6.png)
+
+*Figura 6 — Resultado das comunidades.*
