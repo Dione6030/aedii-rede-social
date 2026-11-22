@@ -51,11 +51,16 @@ def exibir_comunidades(id_para_nome, tabela_usuarios):
     if len(comunidades) == 0:
         print(" Nenhuma comunidade encontrada.")
     else:
+        isolados = 0
         for i in range(len(comunidades)):
             nome_lider = comunidades[i][0]
             tamanho = comunidades[i][1]
+            if tamanho <= 2:
+                isolados += 1
             print(f" {i + 1}ª Comunidade | Representante: {nome_lider} | Membros: {tamanho}")
 
+    print("=" * 40 + "\n")
+    print(f" Comunidades isoladas (1 membro): {isolados}")
     print("=" * 40 + "\n")
 
 
