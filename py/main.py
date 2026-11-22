@@ -45,7 +45,7 @@ def exibir_comunidades(id_para_nome, tabela_usuarios):
     comunidades = social_obter_comunidades(id_para_nome, tabela_usuarios)
 
     print("\n" + "=" * 40)
-    print(f" COMUNIDADES DA REDE (Total: {len(comunidades)})")
+    print(f" COMUNIDADES DA REDE")
     print("=" * 40)
 
     if len(comunidades) == 0:
@@ -55,12 +55,15 @@ def exibir_comunidades(id_para_nome, tabela_usuarios):
         for i in range(len(comunidades)):
             nome_lider = comunidades[i][0]
             tamanho = comunidades[i][1]
-            if tamanho <= 2:
+            if tamanho >= 2:
+                print(f" {i + 1}ª Comunidade | Representante: {nome_lider} | Membros: {tamanho}")
+            else:
                 isolados += 1
-            print(f" {i + 1}ª Comunidade | Representante: {nome_lider} | Membros: {tamanho}")
 
-    print("=" * 40 + "\n")
-    print(f" Comunidades isoladas (1 membro): {isolados}")
+    total_reais = len(comunidades) - isolados
+    print("-" * 40)
+    print(f" Total de comunidades    : {total_reais}")
+    print(f" Usuários isolados       : {isolados}")
     print("=" * 40 + "\n")
 
 
